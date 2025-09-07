@@ -68,6 +68,7 @@ class ConcursoBandasApp:
         nueva = tk.Toplevel(self.ventana)
         nueva.title("Inscribir Banda")
         nueva.geometry("800x600")
+        nueva.resizable(False, False)
         etiqueta1 = tk.Label(nueva, text="Nombre de la banda: ", font=("Arial", 12))
         etiqueta1.grid(row=0, column=0, sticky="w", padx=10, pady=20)
         entrada1 = tk.Entry(nueva, font=("Arial", 12))
@@ -91,6 +92,7 @@ class ConcursoBandasApp:
                 entrada1.delete(0, tk.END) # Este comentario complementa el de arriba, busqué como hacer que el messagebox no sobrepusiera la ventana principal
                 entrada2.delete(0, tk.END)
                 entrada3.delete(0, tk.END)
+                entrada1.focus()
                 return
             else:
                 if nombre in bandas.keys():
@@ -98,19 +100,32 @@ class ConcursoBandasApp:
                     entrada1.delete(0, tk.END)
                     entrada2.delete(0, tk.END)
                     entrada3.delete(0, tk.END)
+                    entrada1.focus()
                     return
             if institucion.strip() == "":
                 messagebox.showerror("Error", "El nombre de institución no puede estar vacío",parent=nueva)
                 entrada1.delete(0, tk.END)
                 entrada2.delete(0, tk.END)
                 entrada3.delete(0, tk.END)
+                entrada1.focus()
                 return
             if categoria.strip() == "":
                 messagebox.showerror("Error", "La categoría no puede estar vacía",parent=nueva)
                 entrada1.delete(0, tk.END)
                 entrada2.delete(0, tk.END)
                 entrada3.delete(0, tk.END)
+                entrada1.focus()
                 return
+            else:
+                if categoria == "primaria" or categoria == "basico" or categoria == "diversificado":
+                    print("Bien")
+                else:
+                    messagebox.showerror("Error", "La categoría no concuerda", parent=nueva)
+                    entrada1.delete(0, tk.END)
+                    entrada2.delete(0, tk.END)
+                    entrada3.delete(0, tk.END)
+                    entrada1.focus()
+                    return
 
             band = BandaEscolar(institucion,categoria,ritmo=None,uniformidad=None,coreograf=None,alineacion=None,puntualidad=None,total=None)
             band.agregar_banda(nombre,band)
@@ -156,7 +171,7 @@ class ConcursoBandasApp:
             entrada6 = tk.Entry(nueva, font=("Arial", 12))
             entrada6.grid(row=5, column=1, sticky="w")
 
-            def acreditar_punteo():
+            def acreditar_punteo(event=None):
                 try:
                     suma = 0
                     b = 0
@@ -261,7 +276,7 @@ class ConcursoBandasApp:
             tree.column(col, width=280, anchor="center")
 
         for nombre, datos in bandas.items():
-            tree.insert("", tk.END, values=(nombre, datos.institucion, datos.categoria,datos.total))
+            tree.insert("", tk.END, values=(nombre, datos.institucion, datos.categoria,datos.total if datos.total is not None else 0))
 
     def ver_ranking(self):
         if not bandas:
@@ -285,6 +300,7 @@ class ConcursoBandasApp:
         ranking = sorted(bandas.items(), key=lambda item: item[1].total if item[1].total is not None else 0,
                          reverse=True)
         for nombre, datos in ranking:
+            # Esto me sirve para la validación en el caso de que una banda no se le hayan registrado los puntajes en vez de mostrar None en el ranking mostrar 0
             tree.insert("", tk.END, values=(nombre, datos.institucion,datos.categoria, datos.total if datos.total is not None else 0))
 
 
