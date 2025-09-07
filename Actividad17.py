@@ -6,6 +6,7 @@ class ConcursoBandasApp:
         self.ventana = tk.Tk()
         self.ventana.title("Concurso de Bandas - Quetzaltenango")
         self.ventana.geometry("1024x720")
+        self.ventana.resizable(False, False)
 
         self.menu()
 
@@ -54,26 +55,26 @@ class ConcursoBandasApp:
             categoria = entrada3.get().lower()
 
             if nombre.strip() == "":
-                messagebox.showerror("Error", "El nombre no puede estar vacío") #Para todas mis validaciones busqué como implementar los mensajes de error en una ventana desplegable
-                entrada1.delete(0, tk.END)
+                messagebox.showerror("Error", "El nombre no puede estar vacío",parent=nueva) #Para todas mis validaciones busqué como implementar los mensajes de error en una ventana desplegable
+                entrada1.delete(0, tk.END) # Este comentario complementa el de arriba, busqué como hacer que el messagebox no sobrepusiera la ventana principal
                 entrada2.delete(0, tk.END)
                 entrada3.delete(0, tk.END)
                 return
             else:
                 if nombre in bandas.keys():
-                    messagebox.showerror("Error", "Esa banda ya está registrada")
+                    messagebox.showerror("Error", "Esa banda ya está registrada",parent=nueva)
                     entrada1.delete(0, tk.END)
                     entrada2.delete(0, tk.END)
                     entrada3.delete(0, tk.END)
                     return
             if institucion.strip() == "":
-                messagebox.showerror("Error", "El nombre de institución no puede estar vacío")
+                messagebox.showerror("Error", "El nombre de institución no puede estar vacío",parent=nueva)
                 entrada1.delete(0, tk.END)
                 entrada2.delete(0, tk.END)
                 entrada3.delete(0, tk.END)
                 return
             if categoria.strip() == "":
-                messagebox.showerror("Error", "La categoría no puede estar vacía")
+                messagebox.showerror("Error", "La categoría no puede estar vacía",parent=nueva)
                 entrada1.delete(0, tk.END)
                 entrada2.delete(0, tk.END)
                 entrada3.delete(0, tk.END)
@@ -84,7 +85,7 @@ class ConcursoBandasApp:
                 "categoria": categoria,
                 "punteo": {}
             }
-
+            messagebox.showinfo("EXITO", "Se ha guardado la información!",parent=nueva) #Esto muestra el mensaje de confirmación de que se ha agregado la información
             nueva.destroy()
 
         boton_agregar = tk.Button(nueva, text="Agregar Banda", font=("Arial", 12, "bold"), command=agregar_banda)
@@ -98,6 +99,7 @@ class ConcursoBandasApp:
         nueva = tk.Toplevel(self.ventana)
         nueva.title("Registrar Evaluacion")
         nueva.geometry("800x600")
+        nueva.resizable(False, False)
         etiqueta1 = tk.Label(nueva, text="Nombre de la banda: ", font=("Arial", 12))
         etiqueta1.grid(row=0, column=0, sticky="w", padx=10, pady=20)
         entrada1 = tk.Entry(nueva, font=("Arial", 12))
@@ -123,13 +125,51 @@ class ConcursoBandasApp:
         etiqueta6.grid(row=4, column=0, sticky="w", padx=10, pady=20)
         entrada6 = tk.Entry(nueva, font=("Arial", 12))
         entrada6.grid(row=4, column=1, sticky="w")
+        def acreditar_punteo():
+            try:
+                b = 0
+                nombre = entrada1.get().upper().strip()
+                ritmo = int(entrada2.get())
+                uniformidad = int(entrada3.get())
+                coreograf = int(entrada4.get())
+                alineacion = int(entrada5.get())
+                puntualidad = int(entrada6.get())
+                if nombre == "":
+                    messagebox.showerror("Error", "El nombre no puede estar vacío", parent=nueva)
+                    entrada1.delete(0, tk.END)
+                    entrada2.delete(0, tk.END)
+                    entrada3.delete(0, tk.END)
+                    entrada4.delete(0, tk.END)
+                    entrada5.delete(0, tk.END)
+                    entrada6.delete(0, tk.END)
+                    return
+                else:
+                    if nombre in bandas.keys():
+                        pass
+                    else:
+                        messagebox.showerror("Error","La banda no está registrada", parent=nueva)
+                        entrada1.delete(0, tk.END)
+                        entrada2.delete(0, tk.END)
+                        entrada3.delete(0, tk.END)
+                        entrada4.delete(0, tk.END)
+                        entrada5.delete(0, tk.END)
+                        entrada6.delete(0, tk.END)
+                        return
+            except Exception as ex:
+                messagebox.showerror("ERROR CATASTROFICO!", ex, parent=nueva)
+                entrada1.delete(0, tk.END)
+                entrada2.delete(0, tk.END)
+                entrada3.delete(0, tk.END)
+                entrada4.delete(0, tk.END)
+                entrada5.delete(0, tk.END)
+                entrada6.delete(0, tk.END)
+                entrada1.focus()
 
-
-        boton_agregar = tk.Button(nueva, text="Agregar Punteo", font=("Arial", 12, "bold"))
+        boton_agregar = tk.Button(nueva, text="Agregar Punteo", font=("Arial", 12, "bold"), command=acreditar_punteo)
         boton_agregar.grid(row=6, column=0, columnspan=2, pady=20)
         boton_salir = tk.Button(nueva, text="Salir", font=("Arial", 12, "bold"), command=nueva.destroy)
         boton_salir.grid(row=6, column=2, columnspan=2, pady=20)
-        #nueva.bind("<Return>", agregar_punteos)
+        nueva.bind("<Return>", acreditar_punteo)
 
     def listar_bandas(self):
         print("Se abrió la ventana: Listado de Bandas")
