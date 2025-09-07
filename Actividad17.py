@@ -285,7 +285,7 @@ class ConcursoBandasApp:
         ranking = sorted(bandas.items(), key=lambda item: item[1].total if item[1].total is not None else 0,
                          reverse=True)
         for nombre, datos in ranking:
-            tree.insert("", tk.END, values=(nombre, datos.institucion, datos.total if datos.total is not None else 0))
+            tree.insert("", tk.END, values=(nombre, datos.institucion,datos.categoria, datos.total if datos.total is not None else 0))
 
 
 if __name__ == "__main__":
