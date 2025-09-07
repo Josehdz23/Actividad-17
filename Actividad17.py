@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 bandas = {}
 class ConcursoBandasApp:
     def __init__(self):
@@ -37,6 +38,7 @@ class ConcursoBandasApp:
         etiqueta1 = tk.Label(nueva, text="Nombre de la banda: ", font=("Arial", 12))
         etiqueta1.grid(row=0, column=0, sticky="w", padx=10, pady=20)
         entrada1 = tk.Entry(nueva, font=("Arial", 12))
+        entrada1.focus() #Este también investigué que con este hago que de una vez esté en el primer campo listo para escribir y no tenga que darle click a cada campo
         entrada1.grid(row=0, column=1, sticky="w")
         etiqueta2 = tk.Label(nueva, text="Institución de la banda: ", font=("Arial", 12))
         etiqueta2.grid(row=1, column=0, sticky="w", padx=10, pady=20)
@@ -46,34 +48,32 @@ class ConcursoBandasApp:
         etiqueta3.grid(row=2, column=0, sticky="w", padx=10, pady=20)
         entrada3 = tk.Entry(nueva, font=("Arial", 12))
         entrada3.grid(row=2, column=1, sticky="w")
-        etiqueta_error = tk.Label(nueva, text="", font=("Arial", 12, "bold"), fg="red")
-        etiqueta_error.grid(row=5, column=0, columnspan=2)
-        def agregar_banda():
+        def agregar_banda(event=None):
             nombre = entrada1.get().upper()
             institucion = entrada2.get().lower()
             categoria = entrada3.get().lower()
 
             if nombre.strip() == "":
-                etiqueta_error.config(text="Error: El nombre no puede estar vacío")
+                messagebox.showerror("Error", "El nombre no puede estar vacío") #Para todas mis validaciones busqué como implementar los mensajes de error en una ventana desplegable
                 entrada1.delete(0, tk.END)
                 entrada2.delete(0, tk.END)
                 entrada3.delete(0, tk.END)
                 return
             else:
                 if nombre in bandas.keys():
-                    etiqueta_error.config(text="Error: Esa banda ya está registrada")
+                    messagebox.showerror("Error", "Esa banda ya está registrada")
                     entrada1.delete(0, tk.END)
                     entrada2.delete(0, tk.END)
                     entrada3.delete(0, tk.END)
                     return
             if institucion.strip() == "":
-                etiqueta_error.config(text="Error: El nombre de institución no puede estar vacío")
+                messagebox.showerror("Error", "El nombre de institución no puede estar vacío")
                 entrada1.delete(0, tk.END)
                 entrada2.delete(0, tk.END)
                 entrada3.delete(0, tk.END)
                 return
             if categoria.strip() == "":
-                etiqueta_error.config(text="Error: La categoría no puede estar vacía")
+                messagebox.showerror("Error", "La categoría no puede estar vacía")
                 entrada1.delete(0, tk.END)
                 entrada2.delete(0, tk.END)
                 entrada3.delete(0, tk.END)
@@ -81,22 +81,55 @@ class ConcursoBandasApp:
 
             bandas[nombre] = {
                 "institucion": institucion,
-                "categoria": categoria
+                "categoria": categoria,
+                "punteo": {}
             }
 
-            print(f"Banda agregada: {nombre} -> {bandas[nombre]}")
             nueva.destroy()
 
         boton_agregar = tk.Button(nueva, text="Agregar Banda", font=("Arial", 12, "bold"), command=agregar_banda)
         boton_agregar.grid(row=3, column=0, columnspan=2, pady=20)
         boton_salir = tk.Button(nueva, text="Salir",font=("Arial", 12, "bold"),  command=nueva.destroy)
         boton_salir.grid(row=3, column=1, columnspan=2, pady=20)
+        nueva.bind("<Return>", agregar_banda) #Investigué que con esto puedo hacer que con el enter se ejecute lo mismo que con el boton agregar :D
 
     def registrar_evaluacion(self):
         print("Se abrió la ventana: Registrar Evaluación")
         nueva = tk.Toplevel(self.ventana)
         nueva.title("Registrar Evaluacion")
         nueva.geometry("800x600")
+        etiqueta1 = tk.Label(nueva, text="Nombre de la banda: ", font=("Arial", 12))
+        etiqueta1.grid(row=0, column=0, sticky="w", padx=10, pady=20)
+        entrada1 = tk.Entry(nueva, font=("Arial", 12))
+        entrada1.focus()
+        entrada1.grid(row=0, column=1, sticky="w")
+        etiqueta2 = tk.Label(nueva, text="Punteo de Ritmo (0-2): ", font=("Arial", 12))
+        etiqueta2.grid(row=1, column=0, sticky="w", padx=10, pady=20)
+        entrada2 = tk.Entry(nueva, font=("Arial", 12))
+        entrada2.grid(row=1, column=1, sticky="w")
+        etiqueta3 = tk.Label(nueva, text="Punteo de Uniformidad (0-2): ", font=("Arial", 12))
+        etiqueta3.grid(row=2, column=0, sticky="w", padx=10, pady=20)
+        entrada3 = tk.Entry(nueva, font=("Arial", 12))
+        entrada3.grid(row=2, column=1, sticky="w")
+        etiqueta4 = tk.Label(nueva, text="Punteo de Coreografía (0-2): ", font=("Arial", 12))
+        etiqueta4.grid(row=3, column=0, sticky="w", padx=10, pady=20)
+        entrada4 = tk.Entry(nueva, font=("Arial", 12))
+        entrada4.grid(row=3, column=1, sticky="w")
+        etiqueta5 = tk.Label(nueva, text="Punteo de Alineación (0-2): ", font=("Arial", 12))
+        etiqueta5.grid(row=4, column=0, sticky="w", padx=10, pady=20)
+        entrada5 = tk.Entry(nueva, font=("Arial", 12))
+        entrada5.grid(row=4, column=1, sticky="w")
+        etiqueta6 = tk.Label(nueva, text="Punteo de Puntualidad (0-2): ", font=("Arial", 12))
+        etiqueta6.grid(row=4, column=0, sticky="w", padx=10, pady=20)
+        entrada6 = tk.Entry(nueva, font=("Arial", 12))
+        entrada6.grid(row=4, column=1, sticky="w")
+
+
+        boton_agregar = tk.Button(nueva, text="Agregar Punteo", font=("Arial", 12, "bold"))
+        boton_agregar.grid(row=6, column=0, columnspan=2, pady=20)
+        boton_salir = tk.Button(nueva, text="Salir", font=("Arial", 12, "bold"), command=nueva.destroy)
+        boton_salir.grid(row=6, column=2, columnspan=2, pady=20)
+        #nueva.bind("<Return>", agregar_punteos)
 
     def listar_bandas(self):
         print("Se abrió la ventana: Listado de Bandas")
